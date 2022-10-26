@@ -17,12 +17,14 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref('Post');
+  final searchFilter =TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Post'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(onPressed: (){
             auth.signOut().then((value){
@@ -38,36 +40,62 @@ class _PostScreenState extends State<PostScreen> {
       ),
       body: Column(
         children: [
-          //pure stream which return the database events
-          Expanded(
-              child: StreamBuilder(
-                stream: ref.onValue,
-                  builder: (context,AsyncSnapshot<DatabaseEvent> snapshot) {
-                  if(!snapshot.hasData){
-                   return const Center(child: CircularProgressIndicator(),);
-                  }else{
-                    Map<dynamic,dynamic> map= snapshot.data!.snapshot.value as dynamic;
-                    List<dynamic> list =[];
-                    list.clear();
-                    list = map.values.toList();
-                    return ListView.builder(
-                      itemCount: snapshot.data!.snapshot.children.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title:  Text(list[index]['title']),
-                        );
-                      },);
-                  }
-                  },)),
-          //has its own listview builder & it is a widget
+          //pure stream which return the database events & used everywhere
+          // Expanded(
+          //     child: StreamBuilder(
+          //       stream: ref.onValue,
+          //         builder: (context,AsyncSnapshot<DatabaseEvent> snapshot) {
+          //         if(!snapshot.hasData){
+          //          return const Center(child: CircularProgressIndicator(),);
+          //         }else{
+          //           Map<dynamic,dynamic> map= snapshot.data!.snapshot.value as dynamic;
+          //           List<dynamic> list =[];
+          //           list.clear();
+          //           list = map.values.toList();
+          //           return ListView.builder(
+          //             itemCount: snapshot.data!.snapshot.children.length,
+          //             itemBuilder: (context, index) {
+          //               return ListTile(
+          //                 title:  Text(list[index]['title']),
+          //               );
+          //             },);
+          //         }
+          //         },)),
+          const SizedBox(height: 10,),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: TextFormField(
+              controller: searchFilter,
+              decoration: const InputDecoration(
+                hintText: 'Search',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+
+                });
+              },
+            ),
+          ),
+          //has its own listview builder & it is a widget and used at the run time in widget tree (disadvantage)
           Expanded(
             child: FirebaseAnimatedList(
                 query: ref,
-                defaultChild: const Text('Loading...'),
+                defaultChild: const Center(child: Text('Loading...')),
                 itemBuilder: (context, snapshot, animation, index) {
-                  return ListTile(
-                    title: Text(snapshot.child('title').value.toString()),
-                  );
+                  final title = snapshot.child('title').value.toString();
+                  if(searchFilter.text.isEmpty){
+                    return ListTile(
+                      title: Text(snapshot.child('title').value.toString()),
+                    );
+                  }else if(title.toLowerCase().contains(searchFilter.text.toLowerCase())){
+                    return ListTile(
+                      title: Text(snapshot.child('title').value.toString()),
+                    );
+                  }else{
+                    return Container();
+                  }
+
                 },),
           ),
         ],
