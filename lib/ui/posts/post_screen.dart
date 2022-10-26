@@ -38,7 +38,28 @@ class _PostScreenState extends State<PostScreen> {
       ),
       body: Column(
         children: [
-          //has its own listview builder
+          //pure stream which return the database events
+          Expanded(
+              child: StreamBuilder(
+                stream: ref.onValue,
+                  builder: (context,AsyncSnapshot<DatabaseEvent> snapshot) {
+                  if(!snapshot.hasData){
+                   return const Center(child: CircularProgressIndicator(),);
+                  }else{
+                    Map<dynamic,dynamic> map= snapshot.data!.snapshot.value as dynamic;
+                    List<dynamic> list =[];
+                    list.clear();
+                    list = map.values.toList();
+                    return ListView.builder(
+                      itemCount: snapshot.data!.snapshot.children.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title:  Text(list[index]['title']),
+                        );
+                      },);
+                  }
+                  },)),
+          //has its own listview builder & it is a widget
           Expanded(
             child: FirebaseAnimatedList(
                 query: ref,
