@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_firebase/ui/posts/post_screen.dart';
+import '/ui/posts/post_screen.dart';
 import '../../utils/utilities.dart';
 import '/ui/auth/signup_screen.dart';
 import '../../widgets/round_button.dart';
