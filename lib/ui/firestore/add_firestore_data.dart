@@ -1,25 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import '../../utils/utilities.dart';
 import '../../widgets/round_button.dart';
 
-class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+class AddFireStoreDataScreen extends StatefulWidget {
+  const AddFireStoreDataScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddPostScreen> createState() => _AddPostScreenState();
+  State<AddFireStoreDataScreen> createState() => _AddFireStoreDataScreenState();
 }
 
-class _AddPostScreenState extends State<AddPostScreen> {
+class _AddFireStoreDataScreenState extends State<AddFireStoreDataScreen> {
   final postController = TextEditingController();
   bool isloading = false;
   //create a table on in firebase it is called a node (ref('post'))
-  final databaseRef=FirebaseDatabase.instance.ref('Post');
+  final fireStore = FirebaseFirestore.instance.collection('users');
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Post'),
+        title: const Text('Add firestore data'),
         centerTitle: true,
       ),
       body: Padding(
@@ -43,24 +44,22 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 setState(() {
                   isloading=true;
                 });
-                //child refer to id or set refers to add
-                //if you want to add a subchild then add child().child()
                 String id= DateTime.now().millisecondsSinceEpoch.toString();
-              databaseRef.child(id).set({
-                'title':postController.text.toString(),
-                'id': id,
-              }).then((value){
-                Utils().toastMessage('Post Added');
-                setState(() {
-                  isloading=false;
+                fireStore.doc(id).set({
+                  'title': postController.text.toString(),
+                  'id' : id,
+                }).then((value) {
+                  setState(() {
+                    isloading=false;
+                  });
+                  Utils().toastMessage('post added');
+                }).onError((error, stackTrace) {
+                  setState(() {
+                    isloading=false;
+                  });
+                  Utils().toastMessage(error.toString());
                 });
-              }).onError((error, stackTrace) {
-                Utils().toastMessage(error.toString());
-                setState(() {
-                  isloading=false;
-                });
-              });
-            },)
+              },)
           ],
         ),
       ),
