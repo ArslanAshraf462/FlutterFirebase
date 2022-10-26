@@ -45,9 +45,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
                 });
                 //child refer to id or set refers to add
                 //if you want to add a subchild then add child().child()
-              databaseRef.child(DateTime.now().millisecondsSinceEpoch.toString()).set({
+                String id= DateTime.now().millisecondsSinceEpoch.toString();
+              databaseRef.child(id).set({
                 'title':postController.text.toString(),
-                'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                'id': id,
               }).then((value){
                 Utils().toastMessage('Post Added');
                 setState(() {
