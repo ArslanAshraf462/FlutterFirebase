@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '/ui/firestore/add_firestore_data.dart';
@@ -16,6 +17,7 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
   final auth = FirebaseAuth.instance;
   //final searchFilter =TextEditingController();
   final editController =TextEditingController();
+  final fireStore = FirebaseFirestore.instance.collection('users').snapshots();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,15 +78,20 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
           //   ),
           // ),
           //has its own listview builder & it is a widget and used at the run time in widget tree (disadvantage)
-          Expanded(
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('data'),
+          StreamBuilder<QuerySnapshot>(
+            stream: fireStore,
+            builder: (context,AsyncSnapshot snapshot) {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text('data'),
+                    );
+                  },),
               );
-            },),
-          ),
+          },),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: () {

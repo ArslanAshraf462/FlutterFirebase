@@ -14,7 +14,7 @@ class AddFireStoreDataScreen extends StatefulWidget {
 class _AddFireStoreDataScreenState extends State<AddFireStoreDataScreen> {
   final postController = TextEditingController();
   bool isloading = false;
-  //create a table on in firebase it is called a node (ref('post'))
+  //create collection ('users'))
   final fireStore = FirebaseFirestore.instance.collection('users');
   @override
   Widget build(BuildContext context) {
