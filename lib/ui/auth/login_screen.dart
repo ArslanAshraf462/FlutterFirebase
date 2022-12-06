@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-import '/ui/auth/login_with_phone_number.dart';
 import '/ui/posts/post_screen.dart';
 import '../../utils/utilities.dart';
 import '/ui/auth/signup_screen.dart';
@@ -51,17 +49,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<UserCredential> signInWithFacebook() async {
     // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login();
-
+    final LoginResult loginResult = await FacebookAuth.instance.login(
+      permissions: ['email', 'public_profile','user_birthday'],
+    );
+    AccessToken? token =  loginResult.accessToken;
+    AccessToken accessToken =token!;
     // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+    final OAuthCredential facebookAuthCredential =  FacebookAuthProvider.credential(accessToken.token);
 
-    //final userData = await FacebookAuth.instance.getUserData();
+    final userData = await FacebookAuth.instance.getUserData();
 
-   // var userEmail = userData['email'];
+   var userEmail = userData['email'];
 
     // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    return _auth.signInWithCredential(facebookAuthCredential);
   }
   @override
   void dispose() {
@@ -69,6 +70,37 @@ class _LoginScreenState extends State<LoginScreen> {
     emailController;
     passwordController;
     super.dispose();
+  }
+  void googleLogin() async {
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        // you can add extras if you require
+      ],
+    );
+
+    _googleSignIn.signIn().whenComplete(() async {
+      GoogleSignInAccount? acc;
+      GoogleSignInAuthentication auth = await acc!.authentication;
+      print(acc.id);
+      print(acc.email);
+      print(acc.displayName);
+      print(acc.photoUrl);
+      acc.authentication.then((GoogleSignInAuthentication auth) async {
+        print(auth.idToken);
+        print(auth.accessToken);
+      });
+    });
+
+  }
+
+  facebookLogin() async{
+     await FacebookAuth.instance.login(
+      permissions: ['email', 'public_profile','user_birthday'],
+    );
+    final userData = await FacebookAuth.instance.getUserData();
+    debugPrint(userData['email']);
+    debugPrint(userData['public_profile']);
   }
 
   void login(){
@@ -183,6 +215,14 @@ class _LoginScreenState extends State<LoginScreen> {
               RoundButton(
                 loading: loading,
                 onTap: () {
+                  googleLogin();
+                },
+                title: 'Login with Google',
+              ),
+              const SizedBox(height: 5,),
+              RoundButton(
+                loading: loading,
+                onTap: () {
                   signInWithFacebook().then((value){
                     Utils().toastMessage(value.user!.email.toString());
                     Navigator.push(context,
@@ -195,6 +235,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
                 title: 'Login with Facebook with firebase',
+              ),
+              const SizedBox(height: 5,),
+              RoundButton(
+                loading: loading,
+                onTap: () {
+                  facebookLogin().then((value){
+                    Utils().toastMessage(value.user!.email.toString());
+                    Navigator.push(context,
+                      MaterialPageRoute(
+                        builder: (context) => const PostScreen(),),
+                    );
+                    setState(() {
+                      loading=false;
+                    });
+                  });
+                },
+                title: 'Login with Facebook',
               ),
               // InkWell(
               //   onTap: () {
