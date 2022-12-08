@@ -139,139 +139,139 @@ class _LoginScreenState extends State<LoginScreen> {
           centerTitle: true,
           automaticallyImplyLeading: false,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Form(
-                  key: _formkey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        controller: emailController,
-                        decoration: const InputDecoration(
-                          hintText: 'Email',
-                          prefixIcon: Icon(Icons.alternate_email),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 100,),
+                Form(
+                    key: _formkey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          controller: emailController,
+                          decoration: const InputDecoration(
+                            hintText: 'Email',
+                            prefixIcon: Icon(Icons.alternate_email),
+                          ),
+                          validator: (value) {
+                            if(value!.isEmpty){
+                              return "Enter email";
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (value) {
-                          if(value!.isEmpty){
-                            return "Enter email";
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10,),
-                      TextFormField(
-                        keyboardType: TextInputType.text,
-                        controller: passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
-                          hintText: 'Password',
-                          prefixIcon: Icon(Icons.lock_open_outlined),
+                        const SizedBox(height: 10,),
+                        TextFormField(
+                          keyboardType: TextInputType.text,
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            hintText: 'Password',
+                            prefixIcon: Icon(Icons.lock_open_outlined),
+                          ),
+                          validator: (value) {
+                            if(value!.isEmpty){
+                              return "Enter password";
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (value) {
-                          if(value!.isEmpty){
-                            return "Enter password";
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                  )),
-              const SizedBox(height: 50,),
-              RoundButton(
-                loading: loading,
-                onTap: () {
-                  if(_formkey.currentState!.validate()){
-                    login();
-                  }
-                },
-                  title: 'Login',
-              ),
-              const SizedBox(height: 30,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:  [
-                  const Text("Don't have an account"),
-                TextButton(onPressed: (){
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const SignUpScreen(),));
-                },
-                    child: const Text('Sign up'))
-                ],
-              ),
-              const SizedBox(height: 30,),
-              RoundButton(
-                loading: loading,
-                onTap: () {
-                  signInWithGoogle();
-                },
-                title: 'Login with Google with firebase',
-              ),
-              const SizedBox(height: 5,),
-              RoundButton(
-                loading: loading,
-                onTap: () {
-                  googleLogin();
-                },
-                title: 'Login with Google',
-              ),
-              const SizedBox(height: 5,),
-              RoundButton(
-                loading: loading,
-                onTap: () {
-                  signInWithFacebook().then((value){
-                    Utils().toastMessage(value.user!.email.toString());
+                      ],
+                    )),
+                const SizedBox(height: 50,),
+                RoundButton(
+                  loading: loading,
+                  onTap: () {
+                    if(_formkey.currentState!.validate()){
+                      login();
+                    }
+                  },
+                    title: 'Login',
+                ),
+                const SizedBox(height: 30,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    const Text("Don't have an account"),
+                  TextButton(onPressed: (){
                     Navigator.push(context,
-                      MaterialPageRoute(
-                        builder: (context) => const PostScreen(),),
-                    );
-                    setState(() {
-                      loading=false;
+                        MaterialPageRoute(builder: (context) => const SignUpScreen(),));
+                  },
+                      child: const Text('Sign up'))
+                  ],
+                ),
+                const SizedBox(height: 30,),
+                RoundButton(
+                  onTap: () {
+                    signInWithGoogle();
+                  },
+                  title: 'Login with Google with firebase',
+                ),
+                const SizedBox(height: 5,),
+                RoundButton(
+                  onTap: () {
+                    googleLogin();
+                  },
+                  title: 'Login with Google',
+                ),
+                const SizedBox(height: 5,),
+                RoundButton(
+                  onTap: () {
+                    signInWithFacebook().then((value){
+                      Utils().toastMessage(value.user!.email.toString());
+                      Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (context) => const PostScreen(),),
+                      );
+                      setState(() {
+                        loading=false;
+                      });
                     });
-                  });
-                },
-                title: 'Login with Facebook with firebase',
-              ),
-              const SizedBox(height: 5,),
-              RoundButton(
-                loading: loading,
-                onTap: () {
-                  facebookLogin().then((value){
-                    Utils().toastMessage(value.user!.email.toString());
-                    Navigator.push(context,
-                      MaterialPageRoute(
-                        builder: (context) => const PostScreen(),),
-                    );
-                    setState(() {
-                      loading=false;
+                  },
+                  title: 'Login with Facebook with firebase',
+                ),
+                const SizedBox(height: 5,),
+                RoundButton(
+                  onTap: () {
+                    facebookLogin().then((value){
+                      Utils().toastMessage(value.user!.email.toString());
+                      Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (context) => const PostScreen(),),
+                      );
+                      setState(() {
+                        loading=false;
+                      });
                     });
-                  });
-                },
-                title: 'Login with Facebook',
-              ),
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.push(context,
-              //         MaterialPageRoute(builder: (context) => const LoginWithPhoneNumber(),));
-              //   },
-              //   child: Container(
-              //     height: 50,
-              //     decoration: BoxDecoration(
-              //       borderRadius: BorderRadius.circular(50),
-              //       border: Border.all(
-              //         color: Colors.black
-              //       ),
-              //     ),
-              //     child: const Center(
-              //       child: Text('Login with phone number'),
-              //     ),
-              //   ),
-              // ),
-            ],
+                  },
+                  title: 'Login with Facebook',
+                ),
+                // InkWell(
+                //   onTap: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: (context) => const LoginWithPhoneNumber(),));
+                //   },
+                //   child: Container(
+                //     height: 50,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(50),
+                //       border: Border.all(
+                //         color: Colors.black
+                //       ),
+                //     ),
+                //     child: const Center(
+                //       child: Text('Login with phone number'),
+                //     ),
+                //   ),
+                // ),
+                const SizedBox(height: 60,),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "533127468146",
+    "firebase_url": "https://flutter-firebase-52255-default-rtdb.firebaseio.com",
     "project_id": "flutter-firebase-52255",
     "storage_bucket": "flutter-firebase-52255.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "533127468146-i7vtpk81g4tki6p6obrsmhtp843trep5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_firebase",
+            "certificate_hash": "cd7d23ee020597f5ea7e0d5311a056bbe7094d83"
+          }
+        },
         {
           "client_id": "533127468146-7s93e2vs55hfut99t1mc5h3l09c43ppr.apps.googleusercontent.com",
           "client_type": 3

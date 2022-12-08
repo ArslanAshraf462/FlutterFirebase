@@ -80,13 +80,19 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
           //has its own listview builder & it is a widget and used at the run time in widget tree (disadvantage)
           StreamBuilder<QuerySnapshot>(
             stream: fireStore,
-            builder: (context,AsyncSnapshot snapshot) {
+            builder: (context,AsyncSnapshot<QuerySnapshot> snapshot) {
+              if(snapshot.connectionState==ConnectionState.waiting){
+                return const Center(child: CircularProgressIndicator(),);
+              }
+              if(snapshot.hasError){
+                return const Center(child: Text('Some Error'),);
+              }
               return Expanded(
                 child: ListView.builder(
-                  itemCount: 10,
+                  itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text('data'),
+                      title: Text(snapshot.data!.docs[index]['title'].toString()),
                     );
                   },),
               );
