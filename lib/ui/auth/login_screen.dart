@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../notification_screen.dart';
 import '/ui/posts/post_screen.dart';
 import '../../utils/utilities.dart';
 import '/ui/auth/signup_screen.dart';
@@ -24,6 +26,42 @@ class _LoginScreenState extends State<LoginScreen> {
   final googleSignIn = GoogleSignIn();
   // GoogleSignInAccount? _user;
   // GoogleSignInAccount get user => _user!;
+///check the app is open through notification and navigate it to a page
+  void getInitialMessage() async{
+    RemoteMessage? message= await FirebaseMessaging.instance.getInitialMessage();
+    ///check the message is not null as the app is open through notification & navigate to screen
+    if(message!=null){
+      if(message.data['page']=='notification'){
+       Navigator.push(context, MaterialPageRoute(builder:  (context) => NotificationScreen(),));
+      }else if(message.data['page']!='notification'){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('No Page provided to navigate'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.deepPurple,
+        ));
+      }
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    getInitialMessage();
+    ///show the firebase message data on app screen like dialog box, snackbar, or page etc
+    FirebaseMessaging.onMessage.listen((message) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message.notification!.body.toString()),
+      duration: const Duration(seconds: 3),
+        backgroundColor: Colors.deepPurple,
+      ));
+    });
+/// sends the notification when app is in background and shows up on app opened & shows snackbar, pages etc
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('App was opened by a notification'),
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.deepPurple,
+      ));
+    });
+  }
   Future signInWithGoogle() async{
     final googleUser = await googleSignIn.signIn();
     if(googleUser==null) return;

@@ -1,69 +1,22 @@
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_firebase/ui/notification_screen.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter/material.dart';
+Future<void> backgroundHandler(RemoteMessage message) async{
+  log("message received! ${message.notification!.title}");
+}
+class NotificationService{
+  static Future<void> initialize() async{
+    NotificationSettings settings= await FirebaseMessaging.instance.requestPermission();
+    if(settings.authorizationStatus ==AuthorizationStatus.authorized){
+      ///get the token to send notification through postman
+     String? token = await FirebaseMessaging.instance.getToken();
+     if(token!=null){
+       log(token);
+     }
+      ///Sends the notification background message to the app
+      FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
-class LocalNotificationService{
- // inside class create instance of FlutterLocalNotificationsPlugin see below
-
-  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-
-  //after this create a method initialize to initialize  localnotification
-
-  static void initialize(BuildContext context) {
-  // initializationSettings  for Android
-  const InitializationSettings initializationSettings =
-  InitializationSettings(
-  android: AndroidInitializationSettings("@mipmap/ic_launcher"),
-  );
-
-  _notificationsPlugin.initialize(
-  initializationSettings,
-  onDidReceiveNotificationResponse: (NotificationResponse id) {
-  print("onSelectNotification");
- // if (id.notificationResponseType.name.isNotEmpty) {
-  print("Router Value1234 $id");
-
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) => Application(),
-    ),
-  );
-
-
- // }
-  },
-  );
+      log("Notification Initialized!");
+    }
   }
-
-
- // after initialize we create channel in createanddisplaynotification method
-
-
-  static void createanddisplaynotification(RemoteMessage message) async {
-  try {
-  final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  const NotificationDetails notificationDetails = NotificationDetails(
-  android: AndroidNotificationDetails(
-  "pushnotificationapp",
-  "pushnotificationappchannel",
-  importance: Importance.max,
-  priority: Priority.high,
-  ),
-  );
-
-  await _notificationsPlugin.show(
-  id,
-  message.notification!.title,
-  message.notification!.body,
-  notificationDetails,
-  payload: message.data['_id'],
-  );
-  } on Exception catch (e) {
-  print(e);
-  }
-  }
-
-
 }
