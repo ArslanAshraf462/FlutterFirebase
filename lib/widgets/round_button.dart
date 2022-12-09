@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/app_color.dart';
+
 class RoundButton extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
@@ -17,18 +19,18 @@ class RoundButton extends StatelessWidget {
       child: Container(
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.deepPurple,
+          color: AppColors.appDefaultColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
           child: loading
               ? const CircularProgressIndicator(
             strokeWidth: 3,
-            color: Colors.white,
+            color: AppColors.whiteColor,
           )
               : Text(title,
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.whiteColor,
           ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/utils/app_color.dart';
 import '../ui/splash_screen.dart';
 import 'firebase_options.dart';
 import 'firebase_services/push_notification_services.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return   MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: AppColors.appBarColor,
       ),
       home: const SplashScreen(),
     );

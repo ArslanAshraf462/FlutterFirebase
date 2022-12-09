@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/widgets/text_form_field_widget.dart';
 import '../../utils/utilities.dart';
 import '/ui/auth/login_screen.dart';
 import '../../widgets/round_button.dart';
@@ -63,36 +64,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 key: _formkey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
-                      decoration: const InputDecoration(
+                    TextFormFieldWidget(
+                        emailController: emailController,
                         hintText: 'Email',
-                        prefixIcon: Icon(Icons.alternate_email),
-                      ),
-                      validator: (value) {
-                        if(value!.isEmpty){
-                          return "Enter email";
-                        }
-                        return null;
-                      },
-                    ),
+                        validator: (value) {
+                      if(value!.isEmpty){
+                        return "Enter email";
+                      }
+                      return null;
+                    },
+                        prefixIcon: const Icon(Icons.alternate_email),
+                        textInputType: TextInputType.emailAddress),
                     const SizedBox(height: 10,),
-                    TextFormField(
-                      keyboardType: TextInputType.text,
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
+                    TextFormFieldWidget(
+                        emailController: passwordController,
                         hintText: 'Password',
-                        prefixIcon: Icon(Icons.lock_open_outlined),
-                      ),
-                      validator: (value) {
-                        if(value!.isEmpty){
-                          return "Enter password";
-                        }
-                        return null;
-                      },
-                    ),
+                        validator: (value) {
+                          if(value!.isEmpty){
+                            return "Enter password";
+                          }
+                          return null;
+                        },
+                        prefixIcon: const Icon(Icons.lock_open_outlined),
+                        textInputType: TextInputType.text),
                   ],
                 )),
             const SizedBox(height: 50,),
